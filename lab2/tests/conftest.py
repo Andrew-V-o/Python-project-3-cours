@@ -1,0 +1,13 @@
+import pytest
+from lab.models import Student
+
+
+@pytest.fixture
+def sample_students():
+    return [
+        Student(id=1, name="Иванов Иван", grades=[78, 85, 90]),
+        Student(id=2, name="Иванов Петр", grades=[65, 70, 0]),
+        Student(id=3, name="Иванова Анна", grades=[92, 88, 95]),
+        Student(id=4, name="Иванов Олег", grades=[100, 90, None]),
+        Student(id=5, name="Иванова Юлия", grades=[80, None, None]),
+    ]
