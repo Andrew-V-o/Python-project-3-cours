@@ -112,7 +112,10 @@ def main():
                 grades = parse_grades_input(grades_input)
                 
                 add_student(students, student_id, name, grades)
+                save_students_to_csv("data/students.csv", students)
+    
                 print(f"Студент '{name}' с ID {student_id} успешно добавлен.")
+                
 
             elif choice == "5":
                 student_id = int(input("Введите ID студента для удаления: ").strip())
