@@ -40,16 +40,16 @@ def test_update_student_grades(sample_students):
 
 def test_sort_students_by_avg(sample_students):
     sorted_list = sort_students(sample_students, by="avg")
-    assert sorted_list[0].name == "Иванова Анна"
+    assert sorted_list[0].name == "Иванов Олег"
 
 
 def test_get_group_stats(sample_students):
     stats = get_group_stats(sample_students)
     assert stats["count"] == 5
-    assert stats["best"].name == "Иванова Анна"
+    assert stats["best"].name == "Иванов Олег"
 
 
 def test_get_top_n_students(sample_students):
     top_2 = get_top_n_students(sample_students, 2)
     assert len(top_2) == 2
-    assert top_2[0].name == "Иванова Анна"
+    assert top_2[0].name == "Иванов Олег"

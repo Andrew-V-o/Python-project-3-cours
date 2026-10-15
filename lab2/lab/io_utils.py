@@ -19,14 +19,10 @@ def parse_grade(val: str) -> Optional[int]:
 
 
 def parse_grades_input(input_str: str) -> List[Optional[int]]:
-    """Преобразует введенную пользователем строку с оценками в список int | None.
-    Разделители: запятая или пробел.
-    Символы '', '-', 'none', 'null' трактуются как пустая отметка (None).
-    """
+    """Преобразует введенную пользователем строку с оценками в список int | None."""
     if not input_str.strip():
         return []
-
-    # Разделяем по запятым, если они есть, иначе по пробелам
+    
     raw_tokens = input_str.split(",") if "," in input_str else input_str.split()
     grades = []
     
@@ -48,33 +44,33 @@ def parse_grades_input(input_str: str) -> List[Optional[int]]:
 def load_students_from_csv(filepath: str) -> List[Student]:
     """Загружает список студентов из CSV файла."""
     students: List[Student] = []
-    with open(filepath, mode="r", encoding="utf-8") as f:
+    
+    with open(filepath, mode="r", encoding="utf-8", newline="") as f:
         reader = csv.reader(f)
         rows = [row for row in reader if row and any(cell.strip() for cell in row)]
         
-        if not rows:
-            return students
+    if not rows:
+        return students
         
-        first_row = rows[0]
-        # Проверка наличия заголовка
-        if first_row and first_row[0].strip().lower() in ("id", "identifier"):
-            rows = rows[1:]
+    first_row = rows[0]
+    if first_row and first_row[0].strip().lower() in ("id", "identifier"):
+        rows = rows[1:]
+        
+    for row in rows:
+        if len(row) < 2:
+            raise CSVFormatError(f"Строка содержит менее двух обязательных колонок: {row}")
+        try:
+            student_id = int(row[0].strip())
+        except ValueError:
+            raise CSVFormatError(f"Некорректный ID студента: '{row[0]}'")
             
-        for row in rows:
-            if len(row) < 2:
-                raise CSVFormatError(f"Строка содержит менее двух обязательных колонок: {row}")
-            try:
-                student_id = int(row[0].strip())
-            except ValueError:
-                raise CSVFormatError(f"Некорректный ID студента: '{row[0]}'")
+        name = row[1].strip()
+        if not name:
+            raise CSVFormatError("Имя студента не может быть пустым.")
             
-            name = row[1].strip()
-            if not name:
-                raise CSVFormatError("Имя студента не может быть пустым.")
-                
-            grades = [parse_grade(g) for g in row[2:]]
-            students.append(Student(id=student_id, name=name, grades=grades))
-            
+        grades = [parse_grade(g) for g in row[2:]]
+        students.append(Student(id=student_id, name=name, grades=grades))
+        
     return students
 
 
@@ -86,7 +82,6 @@ def save_students_to_csv(filepath: str, students: List[Student]) -> None:
     with open(filepath, mode="w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(header)
-        
         for s in students:
             padded_grades = [str(g) if g is not None else "" for g in s.grades]
             padded_grades.extend([""] * (max_grades_len - len(padded_grades)))
@@ -97,6 +92,7 @@ def save_students_to_csv(filepath: str, students: List[Student]) -> None:
 def export_top_n_to_csv(filepath: str, top_students: List[Student]) -> None:
     """Экспортирует ТОП-N студентов в CSV файл."""
     header = ["id", "name", "average", "grades"]
+    
     with open(filepath, mode="w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(header)

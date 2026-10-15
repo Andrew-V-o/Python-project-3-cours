@@ -33,11 +33,7 @@ def update_student_grades(students: List[Student], student_id: int, new_grades: 
 
 
 def sort_students(students: List[Student], by: str = "avg") -> List[Student]:
-    """Сортирует список студентов по заданному критерию:
-    - 'avg': по убыванию среднего балла, затем по имени (a..z);
-    - 'name': по имени (a..z);
-    - 'id': по возрастанию id.
-    """
+    """Сортирует список студентов по заданному критерию."""
     if by == "avg":
         return sorted(students, key=lambda s: (-s.average, s.name.lower()))
     elif by == "name":
@@ -57,10 +53,10 @@ def get_group_stats(students: List[Student]) -> Dict[str, Any]:
             "best": None,
             "worst": None
         }
-
+    
     all_grades = [g for s in students for g in s.grades if g is not None]
     overall_avg = round(sum(all_grades) / len(all_grades), 2) if all_grades else 0.0
-
+    
     sorted_by_avg = sort_students(students, by="avg")
     
     return {
